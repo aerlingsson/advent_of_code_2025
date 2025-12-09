@@ -16,7 +16,7 @@ module Day1 =
         let sum = oldDialPos + rot
         if sum < 0 then (100 - abs (sum % 100)) % 100 else sum % 100
 
-    let private calcPart1 (input: string) =
+    let part1 (input: string) =
         input
         |> parse
         |> Array.fold
@@ -26,11 +26,7 @@ module Day1 =
             (50, 0)
         |> snd
 
-    let part1Example () = calcPart1 Day1Input.example
-    let part1 () = calcPart1 Day1Input.input
-
-
-    let private calcPart2 (input: string) =
+    let part2 (input: string) =
         input
         |> parse
         |> Array.fold
@@ -41,7 +37,3 @@ module Day1 =
                 calcDialPos dialPos rot, zeros + newZeros)
             (50, 0)
         |> snd
-
-    let part2Example () = calcPart2 Day1Input.example
-
-    let part2 () = calcPart2 Day1Input.input
