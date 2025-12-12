@@ -2,22 +2,13 @@ namespace AOC
 
 open System
 
-type Range = { FirstId: int64; LastId: int64 }
-
 module Day2 =
     let private parse (input: string) =
         input.Split ','
-        |> Array.map (fun range ->
+        |> Array.collect (fun range ->
             match range.Split '-' |> Array.toList with
-            | [ first; last ] ->
-                { FirstId = int64 first
-                  LastId = int64 last }
+            | [ first; last ] -> [| int64 first .. int64 last |]
             | other -> failwith $"Unexpected range split contained {other.Length} items")
-        |> Seq.collect (fun r ->
-            seq {
-                for x in [ r.FirstId .. r.LastId ] do
-                    yield x
-            })
 
     let private splitNumber (countSplits: int) (n: int64) =
         n
