@@ -1,5 +1,7 @@
 namespace AOC
 
+open System
+
 type Range = { FirstId: int64; LastId: int64 }
 
 module Day2 =
@@ -10,19 +12,38 @@ module Day2 =
             | [ first; last ] ->
                 { FirstId = int64 first
                   LastId = int64 last }
-            | other -> failwith $"Unexpected range split contained ${other.Length} items")
-
-    let part1 (input: string) =
-        input
-        |> parse
+            | other -> failwith $"Unexpected range split contained {other.Length} items")
         |> Seq.collect (fun r ->
             seq {
                 for x in [ r.FirstId .. r.LastId ] do
                     yield x
             })
-        |> Seq.filter (fun x -> (string x).Length % 2 = 0)
-        |> Seq.filter (fun x ->
-            let s = string x
-            let firstHalf, secondHalf = s.ToCharArray() |> Array.splitAt (s.Length / 2)
-            firstHalf = secondHalf)
+
+    let private splitNumber (countSplits: int) (n: int64) =
+        n
+        |> string
+        |> _.ToCharArray()
+        |> Array.splitInto countSplits
+        |> Array.map Int64.Parse
+
+    let private splitsAreValid (countSplits: int) (n: int64) =
+        n
+        |> splitNumber countSplits
+        |> Seq.distinct
+        |> Seq.tryExactlyOne
+        |> Option.isSome
+
+    let part1 (input: string) =
+        input
+        |> parse
+        |> Seq.filter (fun n -> (string n).Length % 2 = 0)
+        |> Seq.filter (splitsAreValid 2)
+        |> Seq.sum
+
+    let part2 (input: string) =
+        input
+        |> parse
+        |> Seq.filter (fun n ->
+            let maxSplits = (string n).Length
+            [| 2..maxSplits |] |> Array.exists (fun splits -> splitsAreValid splits n))
         |> Seq.sum
