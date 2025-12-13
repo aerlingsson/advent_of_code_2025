@@ -13,13 +13,12 @@ module Day4 =
             |> Array.indexed
             |> Array.filter (fun (_, c) -> c = '@')
             |> Array.map (fun (col, _) -> { Row = rowNumber; Col = col }))
+        |> set
 
     let private adjacentPositions =
-        [ -1, -1; -1, 0; -1, 1; 0, -1; 0, 1; 1, -1; 1, 0; 1, 1 ]
+        List.allPairs [ -1 .. 1 ] [ -1 .. 1 ] |> List.except [ 0, 0 ]
 
-    let part1 (input: string) =
-        let positions = input |> parse |> set
-
+    let private accessibleRolls (positions: Pos Set) =
         positions
         |> Set.filter (fun pos ->
             adjacentPositions
@@ -28,4 +27,18 @@ module Day4 =
                   Col = pos.Col + co }
                 |> positions.Contains)
             |> List.length < 4)
-        |> Set.count
+
+    let part1 (input: string) =
+        printfn "%A" adjacentPositions
+        input |> parse |> accessibleRolls |> Set.count
+
+    let part2 (input: string) =
+        let rec removeAccessibleRolls countRemoved positions =
+            let accesible = positions |> accessibleRolls
+
+            if accesible.Count = 0 then
+                countRemoved
+            else
+                removeAccessibleRolls (countRemoved + accesible.Count) (Set.difference positions accesible)
+
+        input |> parse |> removeAccessibleRolls 0
