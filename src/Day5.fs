@@ -28,3 +28,20 @@ module Day5 =
         ids
         |> Array.filter (fun id -> Array.exists (fun range -> id >= range.From && id <= range.To) ranges)
         |> Array.length
+
+    let part2 (input: string) =
+        let ranges = input |> parse |> fst |> set
+
+        ranges
+        |> Set.fold
+            (fun ranges range ->
+                let haveOverlap =
+                    ranges |> Seq.filter (fun r -> r.From <= range.To && r.To >= range.From) |> set
+
+                let minFrom = haveOverlap |> Seq.map _.From |> Seq.min
+                let maxTo = haveOverlap |> Seq.map _.To |> Seq.max
+
+                Set.difference ranges haveOverlap |> Set.add { From = minFrom; To = maxTo })
+            ranges
+        |> Seq.map (fun r -> r.To - r.From + 1L)
+        |> Seq.sum
