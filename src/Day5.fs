@@ -1,7 +1,5 @@
 namespace AOC
 
-open System
-
 type Range = { From: int64; To: int64 }
 
 module Day5 =

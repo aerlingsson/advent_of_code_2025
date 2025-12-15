@@ -1,7 +1,5 @@
 namespace AOC
 
-open System
-
 type Pos = { Row: int; Col: int }
 
 module Day4 =
@@ -29,7 +27,6 @@ module Day4 =
             |> List.length < 4)
 
     let part1 (input: string) =
-        printfn "%A" adjacentPositions
         input |> parse |> accessibleRolls |> Set.count
 
     let part2 (input: string) =
